@@ -9,16 +9,20 @@ library(tidyverse)
 penguin_data <- read_table("./data/penguin_data.txt")
 
 # run linear regression on data
-lm(body_mass_g ~ flipper_length_mm, data = penguin_data)
-
-# save model, then plot
 model1 <- lm(body_mass_g ~ flipper_length_mm, data = penguin_data)
 summary(model1)
 
-#git config --global user.email [your github email address]
-#git config --global user.name [your github username]
+# create a plot of this regression
+ggplot(penguin_data, aes(x = flipper_length_mm, y = body_mass_g, colour = species)) +
+  geom_point() + stat_smooth(method = 'lm')
 
-git remote add origin https://github.com/c-noonan-02/penguin_project.git
-git branch -M main
-git push -u origin main
+# save the plot to your fig folder - saves the last plot that was run
+ggsave("figs/1_flipper_bodymass_regression.png")
 
+# subset the data by sex or species
+female_penguin_data <- subset(penguin_data, sex == "female")
+gentoo_penguin_data <- subset(penguin_data, species == "Gentoo")
+
+# save the edited data sets
+write_tsv(female_penguin_data, "results/1_penguin_female_only")
+write_tsv(gentoo_penguin_data, "results/2_penguin_gentoo_only")
